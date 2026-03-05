@@ -16,9 +16,21 @@ def create_movie():
     """
     print("creating a movie")
 
+def print_movie(movie):
+    title = movie.get("Title", "Unknown Title")
+    year = movie.get("Year", "Unknown Year")
+    ratings = movie.get("Ratings", "No ratings")
+    runtime = movie.get("Runtime (Hours)", "Unknown Runtime")
+
+    print(f"  Title   : {title}")
+    print(f"  Year    : {year}")
+    print(f"  Ratings : {ratings}")
+    print(f"  Runtime : {runtime}")
+    print()
+
 def print_all_movies():
     """Scan the entire Movies table and print each item."""
-    table = get_table()
+    #table = get_table()
     
     # scan() retrieves ALL items in the table.
     # For large tables you'd use query() instead — but for our small
@@ -40,7 +52,18 @@ def update_rating():
     Prompt user for a rating (integer).
     Append the rating to the movie's Ratings list in the database.
     """
-    print("updating rating")
+    try:
+        title = input("What is the movie title? ")
+        rating = int(input("What is the rating (integer): "))
+
+        table.update_item(
+            Key={"Title": title},
+            UpdateExpression="SET Ratings = list_append(Ratings, :r)",
+            ExpressionAttributeValues={':r': [rating]}
+        )
+
+    except:
+        print("error in updating movie rating")
 
 def delete_movie():
     """
